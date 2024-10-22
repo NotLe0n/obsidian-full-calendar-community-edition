@@ -31,7 +31,7 @@ export default class FullCalendarPlugin extends Plugin {
                     ? new FullNoteCalendar(
                           new ObsidianIO(this.app),
                           info.color,
-                          info.directory
+                          this.settings.notesFolder
                       )
                     : null,
             dailynote: (info) =>
@@ -44,13 +44,15 @@ export default class FullCalendarPlugin extends Plugin {
                     : null,
             ical: (info) =>
                 info.type === "ical"
-                    ? new ICSCalendar(info.color, info.url)
+                    ? new ICSCalendar(new ObsidianIO(this.app), info.color, info.url, this.settings.notesFolder)
                     : null,
             caldav: (info) =>
                 info.type === "caldav"
                     ? new CalDAVCalendar(
+                        new ObsidianIO(this.app),
                           info.color,
                           info.name,
+                          this.settings.notesFolder,
                           {
                               type: "basic",
                               username: info.username,
@@ -186,7 +188,7 @@ export default class FullCalendarPlugin extends Plugin {
                 ) {
                     return;
                 }
-                this.app.workspace.getRightLeaf(false).setViewState({
+                this.app.workspace.getRightLeaf(false)?.setViewState({
                     type: FULL_CALENDAR_SIDEBAR_VIEW_TYPE,
                 });
             },

@@ -32,6 +32,18 @@ export class MockVault implements Vault {
         this.root = root;
         this.contents = contents;
     }
+    getFileByPath(path: string): TFile | null {
+        throw new Error("Method not implemented.");
+    }
+    getFolderByPath(path: string): TFolder | null {
+        throw new Error("Method not implemented.");
+    }
+    process(file: TFile, fn: (data: string) => string, options?: DataWriteOptions): Promise<string> {
+        throw new Error("Method not implemented.");
+    }
+    getAllFolders(includeRoot?: boolean): TFolder[] {
+        throw new Error("Method not implemented.");
+    }
 
     // These aren't implemented in the mock.
     adapter: DataAdapter = {} as DataAdapter;
@@ -104,7 +116,7 @@ export class MockVault implements Vault {
         this.contents.set(path, data);
         return file;
     }
-    async createFolder(path: string): Promise<void> {
+    async createFolder(path: string): Promise<any> {
         let folder = new TFolder();
         folder.name = basename(path);
         this.setParent(path, folder);
@@ -113,7 +125,7 @@ export class MockVault implements Vault {
         file: TAbstractFile,
         force?: boolean | undefined
     ): Promise<void> {
-        file.parent.children.remove(file);
+        file.parent?.children.remove(file);
     }
     trash(file: TAbstractFile, system: boolean): Promise<void> {
         return this.delete(file);

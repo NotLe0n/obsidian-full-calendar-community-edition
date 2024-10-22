@@ -10,7 +10,7 @@ import {
     toEventInput,
 } from "./interop";
 import { renderOnboarding } from "./onboard";
-import { openFileForEvent } from "./actions";
+import { openFileForEvent, openFileForReadonlyEvent } from "./actions";
 import { launchCreateModal, launchEditModal } from "./event_modal";
 import { isTask, toggleTask, unmakeTask } from "src/ui/tasks";
 import { UpdateViewCallback } from "src/core/EventCache";
@@ -264,9 +264,15 @@ export class CalendarView extends ItemView {
                     );
                 } else {
                     menu.addItem((item) => {
-                        item.setTitle(
-                            "No actions available on remote events"
-                        ).setDisabled(true);
+                        item.setTitle("Go to note").onClick(() => {
+                            if (!this.plugin.cache) {
+                                return;
+                            }
+                            if (e.start == null) {
+                                throw Error("didn't find a date for selected cell")
+                            }
+                            openFileForReadonlyEvent(this.plugin.cache, this.app, e.id, e.start);
+                        })
                     });
                 }
 

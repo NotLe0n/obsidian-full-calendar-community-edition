@@ -76,7 +76,7 @@ function stringifyYamlAtom(v: PrintableAtom): string {
     return result;
 }
 
-function stringifyYamlLine(
+export function stringifyYamlLine(
     k: string | number | symbol,
     v: PrintableAtom
 ): string {
@@ -93,7 +93,7 @@ function stringifyYamlLine(
     return `${String(k)}: ${stringifiedAtom}`;
 }
 
-function newFrontmatter(fields: Partial<OFCEvent>): string {
+export function newFrontmatter(fields: Partial<OFCEvent>): string {
     return (
         "---\n" +
         Object.entries(fields)
@@ -260,7 +260,7 @@ export default class FullNoteCalendar extends EditableCalendar {
             );
         }
 
-        const updatedPath = `${file.parent.path}/${filenameForEvent(event)}`;
+        const updatedPath = `${file.parent?.path}/${filenameForEvent(event)}`;
         return { file: { path: updatedPath }, lineNumber: undefined };
     }
 

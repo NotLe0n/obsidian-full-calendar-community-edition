@@ -16,6 +16,7 @@ import { createElement } from "react";
 import { getDailyNoteSettings } from "obsidian-daily-notes-interface";
 import ReactModal from "./ReactModal";
 import { importCalendars } from "src/calendars/parsing/caldav/import";
+import {FolderSuggest} from "./suggestors/FolderSuggester";
 
 export interface FullCalendarSettings {
     calendarSources: CalendarInfo[];
@@ -27,6 +28,7 @@ export interface FullCalendarSettings {
     };
     timeFormat24h: boolean;
     clickToCreateEventFromMonthView: boolean;
+    notesFolder: string;
 }
 
 export const DEFAULT_SETTINGS: FullCalendarSettings = {
@@ -39,6 +41,7 @@ export const DEFAULT_SETTINGS: FullCalendarSettings = {
     },
     timeFormat24h: false,
     clickToCreateEventFromMonthView: true,
+    notesFolder: "calender events",
 };
 
 const WEEKDAYS = [
@@ -245,6 +248,23 @@ export class FullCalendarSettingTab extends PluginSettingTab {
                     await this.plugin.saveSettings();
                 });
             });
+
+        new Setting(containerEl)
+            .setName("Folder for calender event notes")
+            .setDesc("Choose where calender event notes will be stored.")
+            .addSearch((search) => {
+                try {
+                    new FolderSuggest(this.app, search.inputEl);
+                  } catch (e) {
+                    console.error(e); // Improved error handling
+                  }
+                  search.setPlaceholder(this.plugin.settings.notesFolder)
+                    .setValue(this.plugin.settings.notesFolder)
+                    .onChange(new_folder => {
+                      this.plugin.settings.notesFolder = new_folder;
+                      this.plugin.saveSettings();
+                    });
+                });
 
         containerEl.createEl("h2", { text: "Manage Calendars" });
         addCalendarButton(

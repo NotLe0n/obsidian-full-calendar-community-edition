@@ -21,7 +21,7 @@ import { OFCEvent, EventLocation, CalendarInfo, validateEvent } from "../types";
 import { EventResponse } from "./Calendar";
 import { EditableCalendar, EditableEventResponse } from "./EditableCalendar";
 
-const DATE_FORMAT = "YYYY-MM-DD";
+export const DATE_FORMAT = "YYYY-MM-DD";
 
 // PARSING
 
@@ -262,7 +262,7 @@ export default class DailyNoteCalendar extends EditableCalendar {
 
     async getEventsInFile(file: TFile): Promise<EditableEventResponse[]> {
         // @ts-ignore
-        const date = getDateFromFile(file, "day")?.format(DATE_FORMAT);
+        const date = getDateFromFile(file, "day")?.local().format(DATE_FORMAT);
         if (!date) {
             return [];
         }
@@ -282,7 +282,7 @@ export default class DailyNoteCalendar extends EditableCalendar {
 
     async getEvents(): Promise<EventResponse[]> {
         const notes = getAllDailyNotes();
-        const files = Object.values(notes) as TFile[];
+        const files = Object.values(notes) as unknown as TFile[];
         return (
             await Promise.all(files.map((f) => this.getEventsInFile(f)))
         ).flat();
@@ -296,10 +296,10 @@ export default class DailyNoteCalendar extends EditableCalendar {
             );
             throw new Error("Cannot create a recurring event in a daily note.");
         }
-        const m = moment(event.date);
-        let file = getDailyNote(m, getAllDailyNotes()) as TFile;
+        const m = moment(event.date).local();
+        let file = getDailyNote(m, getAllDailyNotes()) as unknown as TFile;
         if (!file) {
-            file = (await createDailyNote(m)) as TFile;
+            file = (await createDailyNote(m)) as unknown as TFile;
         }
         const metadata = await this.app.waitForMetadata(file);
 
@@ -362,9 +362,7 @@ export default class DailyNoteCalendar extends EditableCalendar {
             );
         }
         const { file, lineNumber } = this.getConcreteLocation(loc);
-        const oldDate = getDateFromFile(file as any, "day")?.format(
-            DATE_FORMAT
-        );
+        const oldDate = getDateFromFile(file as any, "day")?.local().format(DATE_FORMAT);
         if (!oldDate) {
             throw new Error(
                 `Could not get date from file at path ${file.path}`
@@ -374,10 +372,10 @@ export default class DailyNoteCalendar extends EditableCalendar {
             // Event needs to be moved to a new file.
             console.debug("daily note event moving to a new file.");
             // TODO: Factor this out with the createFile path.
-            const m = moment(newEvent.date);
-            let newFile = getDailyNote(m, getAllDailyNotes()) as TFile;
+            const m = moment(newEvent.date).local();
+            let newFile = getDailyNote(m, getAllDailyNotes()) as unknown as TFile;
             if (!newFile) {
-                newFile = (await createDailyNote(m)) as TFile;
+                newFile = (await createDailyNote(m)) as unknown as TFile;
             }
             await this.app.read(newFile);
 

@@ -4,7 +4,7 @@ import { OFCEvent } from "./schema";
 const calendarOptionsSchema = z.discriminatedUnion("type", [
     z.object({ type: z.literal("local"), directory: z.string() }),
     z.object({ type: z.literal("dailynote"), heading: z.string() }),
-    z.object({ type: z.literal("ical"), url: z.string().url() }),
+    z.object({ type: z.literal("ical"), url: z.string().url(), directory: z.string() }),
     z.object({
         type: z.literal("caldav"),
         name: z.string(),

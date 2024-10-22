@@ -3,10 +3,11 @@ import equal from "deep-equal";
 
 import { Calendar } from "../calendars/Calendar";
 import { EditableCalendar } from "../calendars/EditableCalendar";
-import EventStore, { StoredEvent } from "./EventStore";
+import EventStore, { EventPathLocation, StoredEvent } from "./EventStore";
 import { CalendarInfo, OFCEvent, validateEvent } from "../types";
 import RemoteCalendar from "../calendars/RemoteCalendar";
 import FullNoteCalendar from "../calendars/FullNoteCalendar";
+import ICSCalendar from "src/calendars/ICSCalendar";
 
 export type CalendarInitializerMap = Record<
     CalendarInfo["type"],
@@ -227,7 +228,50 @@ export default class EventCache {
                 `Event with ID ${eventId} does not have a location in the Vault.`
             );
         }
+
         return { calendar, location };
+    }
+
+    /**
+     * Get calendar and location information for a given event in an read only calendar.
+     * Throws an error if event is not found or if it does not have a location in the Vault.
+     * @param eventId ID of event in question.
+     * @returns Calendar and location for an event.
+     */
+    async getInfoForReadonlyEvent(eventId: string, eventDate: Date) {
+        const details = this.store.getEventDetails(eventId);
+        if (!details) {
+            throw new Error(`Event ID ${eventId} not present in event store.`);
+        }
+
+        const { calendarId, location, event } = details;
+
+        const calendar = this.calendars.get(calendarId);
+
+        if (!calendar) {
+            throw new Error(`Calendar ID ${calendarId} is not registered.`);
+        }
+
+        if(!(calendar instanceof ICSCalendar)) {
+            throw new Error(
+                `This is hacky, add support for other readonly calenders later`
+            );
+        }
+
+        let note = await calendar.getNoteForReadonlyEvent(event, eventDate);
+
+        let note_location: EventPathLocation = {
+            lineNumber: note.lineNumber,
+            path: note.file.path,
+        };
+
+        if (!note_location) {
+            throw new Error(
+                `Event with ID ${eventId} does not have a location in the Vault.`
+            );
+        }
+
+        return { calendar, location: note_location };
     }
 
     ///

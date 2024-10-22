@@ -1,5 +1,5 @@
 import { join } from "path";
-import { TFile } from "obsidian";
+import { TFile, TFolder } from "obsidian";
 
 import { ObsidianInterface } from "src/ObsidianAdapter";
 import { MockApp, MockAppBuilder } from "../../test_helpers/AppBuilder";
@@ -32,16 +32,15 @@ const makeApp = (app: MockApp): ObsidianInterface => ({
         return f;
     },
     getMetadata: (file) => app.metadataCache.getFileCache(file),
-    waitForMetadata: (file) =>
-        new Promise((resolve) =>
-            resolve(app.metadataCache.getFileCache(file)!)
-        ),
+    waitForMetadata: (file) => new Promise((resolve) => resolve(app.metadataCache.getFileCache(file)!)
+    ),
     read: (file) => app.vault.read(file),
     create: jest.fn(),
     rewrite: jest.fn(),
     rename: jest.fn(),
     delete: jest.fn(),
     process: jest.fn(),
+    createFolder: jest.fn(),
 });
 
 const dirName = "events";

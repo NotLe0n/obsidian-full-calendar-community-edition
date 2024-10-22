@@ -6,6 +6,7 @@ import {
     MetadataCache,
     TAbstractFile,
     TFile,
+    TFolder,
     Vault,
 } from "obsidian";
 
@@ -55,6 +56,14 @@ export interface ObsidianInterface {
      * @param contents new contents of the file.
      */
     create(path: string, contents: string): Promise<TFile>;
+
+    /**
+     * Create a new file at the given path with the given contents.
+     *
+     * @param path path to create the file at.
+     * @param contents new contents of the file.
+     */
+    createFolder(path: string): Promise<TFolder>;
 
     /**
      * Rewrite the given file. This API does not directly expose a "write" function
@@ -150,6 +159,10 @@ export class ObsidianIO implements ObsidianInterface {
 
     create(path: string, contents: string): Promise<TFile> {
         return this.vault.create(path, contents);
+    }
+
+    createFolder(path: string): Promise<TFolder> {
+        return this.vault.createFolder(path)
     }
 
     getAbstractFileByPath(path: string): TAbstractFile | null {

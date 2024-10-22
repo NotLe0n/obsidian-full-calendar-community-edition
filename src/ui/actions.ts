@@ -36,3 +36,34 @@ export async function openFileForEvent(
         leaf.view.editor.setCursor({ line: lineNumber, ch: 0 });
     }
 }
+
+export async function openFileForReadonlyEvent(
+    cache: EventCache,
+    { workspace, vault }: { workspace: Workspace; vault: Vault },
+    id: string,
+    eventDate: Date,
+) {
+    
+    const details = await cache.getInfoForReadonlyEvent(id, eventDate);
+    if (!details) {
+        throw new Error("Event does not have local representation.");
+    }
+    const {
+        location: { path, lineNumber },
+    } = details;
+    let leaf = workspace.getMostRecentLeaf();
+    const file = vault.getAbstractFileByPath(path);
+    if (!(file instanceof TFile)) {
+        return;
+    }
+    if (!leaf) {
+        return;
+    }
+    if (leaf.getViewState().pinned) {
+        leaf = workspace.getLeaf("tab");
+    }
+    await leaf.openFile(file);
+    if (lineNumber && leaf.view instanceof MarkdownView) {
+        leaf.view.editor.setCursor({ line: lineNumber, ch: 0 });
+    }
+}

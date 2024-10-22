@@ -4,24 +4,29 @@ import { Authentication, CalendarInfo, OFCEvent } from "src/types";
 import { EventResponse } from "./Calendar";
 import RemoteCalendar from "./RemoteCalendar";
 import { getEventsFromICS } from "src/calendars/parsing/ics";
+import {ObsidianInterface} from "src/ObsidianAdapter";
 
 export default class CalDAVCalendar extends RemoteCalendar {
     _name: string;
     credentials: Authentication;
     serverUrl: string;
     calendarUrl: string;
+    _directory: string;
 
     events: OFCEvent[] = [];
 
     constructor(
+        app: ObsidianInterface,
         color: string,
         name: string,
+        directory: string,
         credentials: Authentication,
         serverUrl: string,
         calendarUrl: string
     ) {
-        super(color);
+        super(app, color);
         this._name = name;
+        this._directory = directory;
         this.credentials = credentials;
         this.serverUrl = serverUrl;
         this.calendarUrl = calendarUrl;
@@ -60,6 +65,10 @@ export default class CalDAVCalendar extends RemoteCalendar {
 
     get name(): string {
         return this._name;
+    }
+
+    get directory(): string {
+        return this._directory
     }
 
     async getEvents(): Promise<EventResponse[]> {
