@@ -252,7 +252,7 @@ export default class EventCache {
             throw new Error(`Calendar ID ${calendarId} is not registered.`);
         }
 
-        if(!(calendar instanceof ICSCalendar)) {
+        if (!(calendar instanceof ICSCalendar)) {
             throw new Error(
                 `This is hacky, add support for other readonly calenders later`
             );

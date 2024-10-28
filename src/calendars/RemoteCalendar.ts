@@ -1,10 +1,9 @@
 import moment from "moment";
 import { Calendar } from "./Calendar";
-import {EventLocation, OFCEvent} from "src/types";
-import {DATE_FORMAT} from "./DailyNoteCalendar";
-import {newFrontmatter} from "./FullNoteCalendar";
-import {ObsidianInterface} from "src/ObsidianAdapter";
-
+import { EventLocation, OFCEvent } from "src/types";
+import { DATE_FORMAT } from "./DailyNoteCalendar";
+import { newFrontmatter } from "./FullNoteCalendar";
+import { ObsidianInterface } from "src/ObsidianAdapter";
 
 const basenameFromEvent = (event: OFCEvent, eventDate: string): string => {
     let legalFilename = event.title.replace("\\", "-").replace("//", "-");
@@ -19,7 +18,8 @@ const basenameFromEvent = (event: OFCEvent, eventDate: string): string => {
     }
 };
 
-const filenameForEvent = (event: OFCEvent, eventDate: string) => `${basenameFromEvent(event, eventDate)}.md`;
+const filenameForEvent = (event: OFCEvent, eventDate: string) =>
+    `${basenameFromEvent(event, eventDate)}.md`;
 
 export default abstract class RemoteCalendar extends Calendar {
     private app: ObsidianInterface;
@@ -33,10 +33,16 @@ export default abstract class RemoteCalendar extends Calendar {
 
     abstract get directory(): string;
 
-    async getNoteForReadonlyEvent(event: OFCEvent, eventDate: Date): Promise<EventLocation> {
+    async getNoteForReadonlyEvent(
+        event: OFCEvent,
+        eventDate: Date
+    ): Promise<EventLocation> {
         let formattedEventDate = moment(eventDate).local().format(DATE_FORMAT);
         const folderPath = `${this.directory}/${event.title}`;
-        const filePath = `${folderPath}/${filenameForEvent(event, formattedEventDate)}`;
+        const filePath = `${folderPath}/${filenameForEvent(
+            event,
+            formattedEventDate
+        )}`;
         const existing_file = this.app.getAbstractFileByPath(filePath);
         if (!existing_file) {
             await this.app.createFolder(folderPath);

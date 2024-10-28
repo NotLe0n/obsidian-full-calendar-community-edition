@@ -3,7 +3,7 @@ import { CalendarInfo } from "src/types";
 import { EventResponse } from "./Calendar";
 import { getEventsFromICS } from "./parsing/ics";
 import RemoteCalendar from "./RemoteCalendar";
-import {ObsidianInterface} from "src/ObsidianAdapter";
+import { ObsidianInterface } from "src/ObsidianAdapter";
 
 const WEBCAL = "webcal";
 
@@ -12,7 +12,12 @@ export default class ICSCalendar extends RemoteCalendar {
     private response: string | null = null;
     private _directory: string;
 
-    constructor(app: ObsidianInterface, color: string, url: string, directory: string) {
+    constructor(
+        app: ObsidianInterface,
+        color: string,
+        url: string,
+        directory: string
+    ) {
         super(app, color);
         if (url.startsWith(WEBCAL)) {
             url = "https" + url.slice(WEBCAL.length);

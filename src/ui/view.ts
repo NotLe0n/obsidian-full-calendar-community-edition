@@ -269,10 +269,17 @@ export class CalendarView extends ItemView {
                                 return;
                             }
                             if (e.start == null) {
-                                throw Error("didn't find a date for selected cell")
+                                throw Error(
+                                    "didn't find a date for selected cell"
+                                );
                             }
-                            openFileForReadonlyEvent(this.plugin.cache, this.app, e.id, e.start);
-                        })
+                            openFileForReadonlyEvent(
+                                this.plugin.cache,
+                                this.app,
+                                e.id,
+                                e.start
+                            );
+                        });
                     });
                 }
 

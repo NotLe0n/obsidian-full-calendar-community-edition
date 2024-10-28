@@ -16,7 +16,7 @@ import { createElement } from "react";
 import { getDailyNoteSettings } from "obsidian-daily-notes-interface";
 import ReactModal from "./ReactModal";
 import { importCalendars } from "src/calendars/parsing/caldav/import";
-import {FolderSuggest} from "./suggestors/FolderSuggester";
+import { FolderSuggest } from "./suggestors/FolderSuggester";
 
 export interface FullCalendarSettings {
     calendarSources: CalendarInfo[];
@@ -255,16 +255,17 @@ export class FullCalendarSettingTab extends PluginSettingTab {
             .addSearch((search) => {
                 try {
                     new FolderSuggest(this.app, search.inputEl);
-                  } catch (e) {
+                } catch (e) {
                     console.error(e); // Improved error handling
-                  }
-                  search.setPlaceholder(this.plugin.settings.notesFolder)
+                }
+                search
+                    .setPlaceholder(this.plugin.settings.notesFolder)
                     .setValue(this.plugin.settings.notesFolder)
-                    .onChange(new_folder => {
-                      this.plugin.settings.notesFolder = new_folder;
-                      this.plugin.saveSettings();
+                    .onChange((new_folder) => {
+                        this.plugin.settings.notesFolder = new_folder;
+                        this.plugin.saveSettings();
                     });
-                });
+            });
 
         containerEl.createEl("h2", { text: "Manage Calendars" });
         addCalendarButton(

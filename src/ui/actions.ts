@@ -41,9 +41,8 @@ export async function openFileForReadonlyEvent(
     cache: EventCache,
     { workspace, vault }: { workspace: Workspace; vault: Vault },
     id: string,
-    eventDate: Date,
+    eventDate: Date
 ) {
-    
     const details = await cache.getInfoForReadonlyEvent(id, eventDate);
     if (!details) {
         throw new Error("Event does not have local representation.");

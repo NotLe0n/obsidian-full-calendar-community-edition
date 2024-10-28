@@ -362,7 +362,9 @@ export default class DailyNoteCalendar extends EditableCalendar {
             );
         }
         const { file, lineNumber } = this.getConcreteLocation(loc);
-        const oldDate = getDateFromFile(file as any, "day")?.local().format(DATE_FORMAT);
+        const oldDate = getDateFromFile(file as any, "day")
+            ?.local()
+            .format(DATE_FORMAT);
         if (!oldDate) {
             throw new Error(
                 `Could not get date from file at path ${file.path}`
@@ -373,7 +375,10 @@ export default class DailyNoteCalendar extends EditableCalendar {
             console.debug("daily note event moving to a new file.");
             // TODO: Factor this out with the createFile path.
             const m = moment(newEvent.date).local();
-            let newFile = getDailyNote(m, getAllDailyNotes()) as unknown as TFile;
+            let newFile = getDailyNote(
+                m,
+                getAllDailyNotes()
+            ) as unknown as TFile;
             if (!newFile) {
                 newFile = (await createDailyNote(m)) as unknown as TFile;
             }

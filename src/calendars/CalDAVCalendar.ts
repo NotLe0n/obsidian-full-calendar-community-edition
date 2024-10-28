@@ -4,7 +4,7 @@ import { Authentication, CalendarInfo, OFCEvent } from "src/types";
 import { EventResponse } from "./Calendar";
 import RemoteCalendar from "./RemoteCalendar";
 import { getEventsFromICS } from "src/calendars/parsing/ics";
-import {ObsidianInterface} from "src/ObsidianAdapter";
+import { ObsidianInterface } from "src/ObsidianAdapter";
 
 export default class CalDAVCalendar extends RemoteCalendar {
     _name: string;
@@ -68,7 +68,7 @@ export default class CalDAVCalendar extends RemoteCalendar {
     }
 
     get directory(): string {
-        return this._directory
+        return this._directory;
     }
 
     async getEvents(): Promise<EventResponse[]> {
